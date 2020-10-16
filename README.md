@@ -14,11 +14,11 @@ https://en.wikipedia.org/wiki/Binary_space_partitioning
 
 You are given four choices
 
-![Alt Text](/images/readme/choices.png)
+![Alt Text](https://github.com/777mlHg/BSP-Dungeon-Generator/blob/master/images/readme/choices.png)
 
 Example (Medium)
 
-![Alt Text](/images/readme/example_output.png)
+![Alt Text](https://github.com/777mlHg/BSP-Dungeon-Generator/blob/master/images/readme/example_output.png)
 
 ## License
 

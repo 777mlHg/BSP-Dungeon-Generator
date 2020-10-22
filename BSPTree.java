@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @param max
  * @return random int between min and max
  */
-class Randomizer
+class Randomizer // using random number
 {
   public static int generate(int min, int max)
   {
@@ -99,8 +99,8 @@ class Rectangle
 }
 
 /**
- * BSP algorithm; divide the map until MIN_SIZE;then fill the leaves with rooms;
- * Converted from actionscript to java
+ * BSP algorithm; divide the map until MIN_SIZE;then fill the leaves with a
+ * room; Converted from actionscript to java
  * https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268
  */
 class Leaf
@@ -242,7 +242,7 @@ public class BSPTree
   private int[][] level; // initialize the level array
 
   /**
-   * implementation of BSP on square or rectangular map.
+   * implementation of BSP on 2D matrix representing a map.
    * https://en.wikipedia.org/wiki/Binary_space_partitioning
    * 
    * @author Timothy Hely

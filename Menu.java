@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Scanner;
 
-abstract class Menu
+abstract class Menu // abstract class
 {
   int choice;
   int numberOfChoices;
@@ -9,7 +9,7 @@ abstract class Menu
   HashMap<Integer, String> options = new HashMap<Integer, String>();
   String message = "Enter the corresponding number to the map you want to generate";
 
-  public abstract void initializeOptions();
+  public abstract void initializeOptions(); // abstract method
 
   /**
    * print options initalized by initializeOptions()
@@ -44,15 +44,13 @@ abstract class Menu
 
   public static void printMap(int[][] mapArray, String wallColor, String floorColor)
   {
-    for (int[] x : mapArray)
+    for (int[] xRow : mapArray)
     {
-      for (int y : x)
+      for (int tile : xRow)
       {
-        String out = (y == 0) ? floorColor : wallColor;
-        System.out.print(out);
-
+        System.out.print(tile == 0 ? floorColor : wallColor); // if 0(floor) print the floor color else print wall color
       }
-      System.out.println("\033[0m");
+      System.out.println("\033[0m");// new line reset background color
     }
     System.out.println("done.");
 
@@ -66,7 +64,7 @@ abstract class Menu
 
 }
 
-class MapSizeMenu extends Menu
+class MapSizeMenu extends Menu // example of inheritance
 {
   @Override
   public void initializeOptions()

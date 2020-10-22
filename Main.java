@@ -1,8 +1,11 @@
 /**
- * @author Joseph Stout
- *
- *         this program use binary space partitioning to generate a random
- *         dungeon map
+ * @author Joseph Stout this program use binary space partitioning to generate a
+ *         random dungeon map 10/19/2020
+ * 
+ * 
+ *         Upgrades #1 using random numbers #4 more than 2 "layouts" #5 more
+ *         than 1 ArrayList and/or array #6 really good external documentation
+ *         with Markdown
  */
 public class Main
 {
@@ -16,7 +19,7 @@ public class Main
     int[][] map;
     int sizeChoice;
 
-    MapSizeMenu menu = new MapSizeMenu();
+    MapSizeMenu menu = new MapSizeMenu(); // initalize the menu for choosing size of the map
 
     System.out.println("Welcome to my dungeon generator!");// welcome message
 
@@ -26,17 +29,17 @@ public class Main
     floorColor = "\033[47m \033[0m";
     wallColor = "\033[40m \033[0m";
 
-    if (sizeChoice == 1)
+    if (sizeChoice == 1)// small 30x30
     {
       mapWidth = 30;
       mapHeight = 30;
     }
-    else if (sizeChoice == 2)
+    else if (sizeChoice == 2)// medium 40x40
     {
       mapWidth = 40;
       mapHeight = 40;
     }
-    else if (sizeChoice == 3)
+    else if (sizeChoice == 3)// large 50x50
     {
       mapWidth = 50;
       mapHeight = 50;
@@ -54,7 +57,7 @@ public class Main
               "\033[46m ", // CYAN
               "\033[47m " // WHITE
       };
-      CustomMenu custom = new CustomMenu();
+      CustomMenu custom = new CustomMenu();// initalize the menu for choosing a custom map
       custom.initializeOptions();
       System.out.println("Enter integer choice for width: ");
       mapWidth = custom.intInput(20, 100);
@@ -68,6 +71,6 @@ public class Main
 
     map = new BSPTree().generateLeafs(mapWidth, mapHeight); // generate the map with 1s and 0s
     Menu.clearScreen(); // clear console
-    Menu.printMap(map, wallColor, floorColor);// print the map
+    Menu.printMap(map, wallColor, floorColor);// print the map with colors
   }
 }

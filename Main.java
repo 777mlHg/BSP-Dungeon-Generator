@@ -69,7 +69,7 @@ public class Main
       floorColor = ansiColors[custom.numberedChoice() - 1] + "\033[0m";
     }
 
-    map = new BSPTree().generateLeafs(mapWidth, mapHeight); // generate the map with 1s and 0s
+    map = new BSPTree(mapWidth, mapHeight).generateLeafs(); // generate the map with 1s and 0s
     Menu.clearScreen(); // clear console
     Menu.printMap(map, wallColor, floorColor);// print the map with colors
   }

@@ -105,7 +105,7 @@ class Rectangle
  */
 class Leaf
 {
-  final private int MIN_SIZE = 10;
+  final private int MIN_LEAF_SIZE = 10;
   private int x;
   private int y;
   private int w;
@@ -149,13 +149,13 @@ class Leaf
       splitHorizontal = true;
     }
 
-    int max = (splitHorizontal ? h : w) - MIN_SIZE;
-    if (max <= MIN_SIZE)
+    int max = (splitHorizontal ? h : w) - MIN_LEAF_SIZE;
+    if (max <= MIN_LEAF_SIZE)
     {
       return false;
     }
 
-    int split = Randomizer.generate(MIN_SIZE, max);
+    int split = Randomizer.generate(MIN_LEAF_SIZE, max);
     if (splitHorizontal)
     {
       leftChild = new Leaf(x, y, w, split);
@@ -189,13 +189,23 @@ class Leaf
     }
     else
     {
-      Point roomSize;
-      Point roomPos;
+      int width = Randomizer.generate(BSPTree.getROOM_MIN_SIZE(),
+              Math.min(BSPTree.getROOM_MAX_SIZE(), this.w - 1));
+      int height = Randomizer.generate(BSPTree.getROOM_MIN_SIZE(),
+              Math.min(BSPTree.getROOM_MAX_SIZE(), this.h - 1));
+      int x = Randomizer.generate(this.x, this.x + (this.w - 1) - width);
+      int y = Randomizer.generate(this.y, this.y + (this.h - 1) - height);
 
-      roomSize = new Point(Randomizer.generate(3, w - 2), Randomizer.generate(3, h - 2));
-      roomPos = new Point(Randomizer.generate(1, w - roomSize.getX() - 1), Randomizer.generate(1, h - roomSize.getY() - 1));
-      room = new Rectangle(x + roomPos.getX(), y + roomPos.getY(), roomSize.getX(), roomSize.getY());
+      // Point roomSize;
+      // Point roomPos;
 
+      // roomSize = new Point(Randomizer.generate(3, w - 2), Randomizer.generate(3, h
+      // - 2));
+      // roomPos = new Point(Randomizer.generate(1, w - roomSize.getX() - 1),
+      // Randomizer.generate(1, h - roomSize.getY() - 1));
+      // room = new Rectangle(x + roomPos.getX(), y + roomPos.getY(), roomSize.getX(),
+      // roomSize.getY());
+      room = new Rectangle(x, y, width, height);
       bspTreeInstance.createRoom(room);
 
     }
@@ -238,8 +248,6 @@ class Leaf
 
 public class BSPTree
 {
-  final private int MAX_LEAF_SIZE = 20; // leaf Section size limit
-  private int[][] level; // initialize the level array
 
   /**
    * implementation of BSP on 2D matrix representing a map.
@@ -252,7 +260,22 @@ public class BSPTree
    * @param mapHeight
    * @return 2D array of 1s and 0s. 1 for wall; 0 for floor.
    */
-  public int[][] generateLeafs(int mapWidth, int mapHeight)
+  private int[][] level; // initialize the level array
+  // NOTE: tweaking finals below will change generation algorithm
+  final private static int MAX_LEAF_SIZE = 24; // leaf Section size limit
+  final private static int ROOM_MAX_SIZE = 17;
+  final private static int ROOM_MIN_SIZE = 8;
+
+  private static int mapWidth;
+  private static int mapHeight;
+
+  public BSPTree(int mW, int mH)
+  {
+    BSPTree.mapWidth = mW;
+    BSPTree.mapHeight = mH;
+  }
+
+  public int[][] generateLeafs()
   {
 
     if (mapWidth < 15 || mapHeight < 15)
@@ -284,7 +307,8 @@ public class BSPTree
         Leaf lHelper = _leafs.get(i);
         if (lHelper.leftChild == null && lHelper.rightChild == null)
         {
-          if (lHelper.getWidth() > MAX_LEAF_SIZE || lHelper.getHeight() > MAX_LEAF_SIZE || Math.random() > 0.8)
+          if (lHelper.getWidth() > MAX_LEAF_SIZE || lHelper.getHeight() > MAX_LEAF_SIZE
+                  || Math.random() > 0.8)
           {
             if (lHelper.splitLeaf())
             {
@@ -358,5 +382,30 @@ public class BSPTree
     {
       level[x][i] = 0;
     }
+  }
+
+  public static int getMAX_LEAF_SIZE()
+  {
+    return MAX_LEAF_SIZE;
+  }
+
+  public static int getROOM_MAX_SIZE()
+  {
+    return ROOM_MAX_SIZE;
+  }
+
+  public static int getROOM_MIN_SIZE()
+  {
+    return ROOM_MIN_SIZE;
+  }
+
+  public static int getMapHeight()
+  {
+    return mapHeight;
+  }
+
+  public static int getMapWidth()
+  {
+    return mapWidth;
   }
 }

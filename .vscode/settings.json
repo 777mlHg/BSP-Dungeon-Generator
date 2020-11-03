@@ -1,4 +1,7 @@
 {
+  "files.exclude": {
+    "**/*.class": true
+  },
   "java.format.settings.url": "https://raw.githubusercontent.com/777mlHg/java_setting_profile/master/setting_profile.xml",
   "editor.detectIndentation": false,
   "editor.tabSize": 2

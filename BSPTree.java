@@ -166,7 +166,6 @@ class Leaf
       leftChild = new Leaf(x, y, split, h);
       rightChild = new Leaf(x + split, y, w - split, h);
     }
-
     return true;
   }
 
@@ -196,15 +195,6 @@ class Leaf
       int x = Randomizer.generate(this.x, this.x + (this.w - 1) - width);
       int y = Randomizer.generate(this.y, this.y + (this.h - 1) - height);
 
-      // Point roomSize;
-      // Point roomPos;
-
-      // roomSize = new Point(Randomizer.generate(3, w - 2), Randomizer.generate(3, h
-      // - 2));
-      // roomPos = new Point(Randomizer.generate(1, w - roomSize.getX() - 1),
-      // Randomizer.generate(1, h - roomSize.getY() - 1));
-      // room = new Rectangle(x + roomPos.getX(), y + roomPos.getY(), roomSize.getX(),
-      // roomSize.getY());
       room = new Rectangle(x, y, width, height);
       bspTreeInstance.createRoom(room);
 
@@ -249,6 +239,15 @@ class Leaf
 public class BSPTree
 {
 
+  private int[][] level; // initialize the level array
+  // NOTE: tweaking finals below will change generation algorithm
+  final private static int MAX_LEAF_SIZE = 24; // leaf Section size limit
+  final private static int ROOM_MAX_SIZE = 15;
+  final private static int ROOM_MIN_SIZE = 8;
+
+  private int mapWidth;
+  private int mapHeight;
+
   /**
    * implementation of BSP on 2D matrix representing a map.
    * https://en.wikipedia.org/wiki/Binary_space_partitioning
@@ -258,23 +257,18 @@ public class BSPTree
    * 
    * @param mapWidth
    * @param mapHeight
-   * @return 2D array of 1s and 0s. 1 for wall; 0 for floor.
+   * @return Contructor; Call generateLeafs() to return 2D array
    */
-  private int[][] level; // initialize the level array
-  // NOTE: tweaking finals below will change generation algorithm
-  final private static int MAX_LEAF_SIZE = 24; // leaf Section size limit
-  final private static int ROOM_MAX_SIZE = 17;
-  final private static int ROOM_MIN_SIZE = 8;
-
-  private static int mapWidth;
-  private static int mapHeight;
-
   public BSPTree(int mW, int mH)
   {
-    BSPTree.mapWidth = mW;
-    BSPTree.mapHeight = mH;
+    this.mapWidth = mW;
+    this.mapHeight = mH;
   }
 
+  /**
+   * 
+   * @return 2D array of 1s and 0s. 1 for wall; 0 for floor.
+   */
   public int[][] generateLeafs()
   {
 
@@ -399,13 +393,13 @@ public class BSPTree
     return ROOM_MIN_SIZE;
   }
 
-  public static int getMapHeight()
+  public int getMapHeight()
   {
-    return mapHeight;
+    return this.mapHeight;
   }
 
-  public static int getMapWidth()
+  public int getMapWidth()
   {
-    return mapWidth;
+    return this.mapWidth;
   }
 }

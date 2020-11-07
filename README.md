@@ -15,12 +15,12 @@ https://en.wikipedia.org/wiki/Binary_space_partitioning
 - Open terminal in directory of Main.java
 - compile and run
 
-![Alt Text](https://raw.githubusercontent.com/777mlHg/BSP-Dungeon-Generator/master/images/readme/change_hw_color.gif)
+![Alt Text](https://raw.githubusercontent.com/777mlHg/BSP-Dungeon-Generator/master/images/readme/complie_run.gif)
 
 - Click generate to generate a map
 - Change width, height, wall and floor color to modify map.
 
-![Alt Text](https://raw.githubusercontent.com/777mlHg/BSP-Dungeon-Generator/master/images/readme/complie_run.gif)
+![Alt Text](https://raw.githubusercontent.com/777mlHg/BSP-Dungeon-Generator/master/images/readme/change_hw_color.gif)
 
 ## License
 

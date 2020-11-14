@@ -1,10 +1,18 @@
 package src.dungeonmap;
 
+import src.dungeonmap.common.MyConstants;
+
 import java.awt.*;
-import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+
 import javax.imageio.ImageIO;
 
 public class PaintGeneratedMap extends JPanel
@@ -16,7 +24,7 @@ public class PaintGeneratedMap extends JPanel
 
   private BufferedImage playerImage; // image of the player
 
-  BSPTree mapRaw; // initalize the map
+  private BSPTree mapRaw; // initalize the map
   private int[][] level; // map in array representaion
 
   int posX; // player postition x
@@ -36,19 +44,138 @@ public class PaintGeneratedMap extends JPanel
     loadPlayerImage(); // load the image so paintComponet can draw it
     this.mapRaw = new BSPTree(mapWidth, mapHeight); // create a new map
     this.level = mapRaw.generateLeafs(); // create a new level
+    System.out.println(Arrays.deepToString(level));
 
     // initalize player inital location
-    posX = mapRaw.getRandomRoomCenter().getRoomCenter().getX();
-    posY = mapRaw.getRandomRoomCenter().getRoomCenter().getY();
-    level[posX][posY] = 3;// 3
-
-    System.out.println(posX + " " + posY);
+    posX = mapRaw.getRandomRoomCenter().getX();
+    posY = mapRaw.getRandomRoomCenter().getY();
+    level[posX][posY] = MyConstants.PLAYER;// 3
 
     // TODO: Stop gap. Use margins to offset?
     setBackground(wallColor);
+
+    // https://stackoverflow.com/questions/31442009/how-to-move-an-object-in-a-jpanel-using-the-arrow-keys
+    Action leftAction = new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event)// left
+      {
+        try
+        {
+          System.out.println("asd");
+
+          posX -= 1;
+          if (level[posX][posY] == MyConstants.WALL)
+          {
+            posX += 1;
+          }
+        }
+        catch (Exception e)
+        {
+          // TODO: handle exception
+          System.out.println(e);
+
+        }
+        System.out.println(posX);
+        repaint();
+      }
+    };
+
+    Action rightAction = new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event) // right
+      {
+        try
+        {
+          posX += 1;
+          if (level[posX][posY] == MyConstants.WALL)
+          {
+            posX -= 1;
+          }
+          System.out.println(posX);
+        }
+        catch (Exception e)
+        {
+          // TODO: handle exception
+          System.out.println(e);
+        }
+
+        repaint();
+      }
+    };
+    Action upAction = new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event) // up
+      {
+        try
+        {
+          posY -= 1;
+          if (level[posX][posY] == MyConstants.WALL)
+          {
+            posY += 1;
+          }
+        }
+        catch (Exception e)
+        {
+          // TODO: handle exception
+          System.out.println(e);
+
+        }
+        System.out.println(posY);
+
+        repaint();
+      }
+    };
+    Action downAction = new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent event) // down
+      {
+        try
+        {
+          posY += 1;
+          if (level[posX][posY] == MyConstants.WALL)
+          {
+            posY -= 1;
+          }
+        }
+        catch (Exception e)
+        {
+          // TODO: handle exception
+          System.out.println(e);
+
+        }
+        System.out.println(posY);
+
+        repaint();
+      }
+    };
+
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), leftAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_KP_LEFT, 0), leftAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_4, 0), leftAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), leftAction);
+
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), rightAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_KP_RIGHT, 0), rightAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), rightAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), rightAction);
+    // up
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), upAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0), upAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), upAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), upAction);
+    // down
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), downAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), downAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), downAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), downAction);
+
   }
 
-  public void paintComponent(Graphics graphics)
+  protected void paintComponent(Graphics graphics)
   {
 
     super.paintComponent(graphics);
@@ -56,33 +183,36 @@ public class PaintGeneratedMap extends JPanel
     int tileIntRepresentation;
     int j;
     int i;
+    Graphics2D g2d = (Graphics2D)graphics.create();
 
+    // https://stackoverflow.com/questions/27463951/java-awt-graphics-for-loop-grid
     for (i = 0; i < level.length; i++)
     {
       for (j = 0; j < level[i].length; j++)
       {
-
-        // https://stackoverflow.com/questions/27463951/java-awt-graphics-for-loop-grid
         tileIntRepresentation = level[i][j];
-        if (tileIntRepresentation == 3)
 
+        if (tileIntRepresentation == MyConstants.FLOOR)
         {
-          graphics.setColor(floorColor);
-          graphics.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);
-          graphics.drawImage(playerImage, (i + 1) * 20, (j + 1) * 20, null);
+          g2d.setColor(floorColor);
+          g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);// +1 to add margin
         }
-        else if (tileIntRepresentation == 0)
+        else if (tileIntRepresentation == MyConstants.WALL)
         {
-          graphics.setColor(floorColor);
-          graphics.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);// +1 to add margin
+          g2d.setColor(wallColor);
+          g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20); // +1 to add margin
         }
         else
         {
-          graphics.setColor(wallColor);
-          graphics.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20); // +1 to add margin
+          g2d.setColor(floorColor);
+          g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);
         }
       }
     }
+
+    g2d.drawImage(playerImage, (posX + 1) * 20, (posY + 1) * 20, null);
+
+    g2d.dispose();
     System.out.println("end");
 
   }
@@ -101,4 +231,12 @@ public class PaintGeneratedMap extends JPanel
     return playerImage;
   }
 
+  protected void bindKeyStroke(int condition, String name, KeyStroke keyStroke, Action action)
+  {
+    InputMap im = getInputMap(condition);
+    ActionMap am = getActionMap();
+
+    im.put(keyStroke, name);
+    am.put(name, action);
+  }
 }

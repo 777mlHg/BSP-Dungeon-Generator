@@ -8,8 +8,8 @@ public class MainWindow extends JFrame
 {
   private static final long serialVersionUID = 1L; // remove warning
 
-  private int mapPanelWidth = 15; // set default size for mapPanel
-  private int mapPanelHeight = 15; // set default size for mapPanel
+  private int mapPanelWidth = 40; // set default size for mapPanel
+  private int mapPanelHeight = 40; // set default size for mapPanel
 
   private PaintGeneratedMap mapPanel;
   // private JFrame mapFrame = new JFrame("Map");
@@ -107,9 +107,8 @@ public class MainWindow extends JFrame
           // https://stackoverflow.com/questions/9347076/how-to-remove-all-components-from-a-jframe-in-java
 
           // mapPanel.revalidate();
-          mapPanel.setVisible(true);
-          app.getContentPane().removeAll();
-          app.add(inputsContainerPanel, BorderLayout.NORTH);
+          // mapPanel.setVisible(true);
+          // app.add(inputsContainerPanel, BorderLayout.NORTH);
           app.add(mapPanel);
           app.revalidate();
 
@@ -117,8 +116,7 @@ public class MainWindow extends JFrame
         catch (Error e)
         {
           System.err.println(e);
-          // JOptionPane.showMessageDialog(app, "Map width and map height must be larger
-          // than 15!");
+          JOptionPane.showMessageDialog(app, "Map width and map height must be larger than 15!");
         }
       }
     }

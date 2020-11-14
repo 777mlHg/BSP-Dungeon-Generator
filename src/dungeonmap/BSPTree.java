@@ -1,104 +1,7 @@
 package src.dungeonmap;
 
+import src.dungeonmap.common.*;
 import java.util.ArrayList;
-
-/**
- * Generate random number between min and max
- * 
- * @author Abel Callejo
- *         https://stackoverflow.com/questions/363681/how-do-i-generate-random-integers-within-a-specific-range-in-java
- * 
- * @param min
- * @param max
- * @return random int between min and max
- */
-class Randomizer // using random number
-{
-  public static int generate(int min, int max)
-  {
-    return min + (int)(Math.random() * ((max - min) + 1));
-  }
-}
-
-/**
- * point data structure;
- * https://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/Point.html
- */
-class Point
-{
-  private int x;
-  private int y;
-
-  Point(int x, int y)
-  {
-    this.x = x;
-    this.y = y;
-  }
-
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
-  }
-}
-
-/**
- * Rectangle structure; represents Rectangle in actionscript
- * https://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/Rectangle.html
- */
-class Rectangle
-{
-  private int x1;
-  private int y1;
-  private int x2;
-  private int y2;
-
-  Rectangle(int x, int y, int w, int h)
-  {
-    this.x1 = x;
-    this.y1 = y;
-    this.x2 = x + w;
-    this.y2 = y + h;
-  }
-
-  public int getX1()
-  {
-    return x1;
-  }
-
-  public int getX2()
-  {
-    return x2;
-  }
-
-  public int getY1()
-  {
-    return y1;
-  }
-
-  public int getY2()
-  {
-    return y2;
-  }
-
-  /**
-   * @author https://eskerda.com/bsp-dungeon-generation/
-   * @return center of the rectangle
-   */
-  public Point center()
-  {
-    int centerX = (int)((this.x1 + this.x2) / 2);
-    int centerY = (int)((this.y1 + this.y2) / 2);
-
-    Point centerPointObject = new Point(centerX, centerY);
-    return centerPointObject;
-  }
-
-}
 
 /**
  * BSP algorithm; divide the map until MIN_SIZE;then fill the leaves with a
@@ -133,11 +36,6 @@ class Leaf
   public int getHeight()
   {
     return h;
-  }
-
-  public Point getRoomCenter()
-  {
-    return room.center();
   }
 
   public boolean splitLeaf()
@@ -285,12 +183,16 @@ public class BSPTree
       throw new java.lang.Error("map width and map height must be larger than 15");
     }
 
-    tiles = new int[mapWidth][mapHeight];
+    // tiles = new int[mapWidth + 1][mapHeight + 1]; // +1 for creating a border of
+    // walls
+    tiles = new int[mapWidth][mapHeight]; // +1 for creating a border of walls
+
     for (int i = 0; i < mapWidth; i++)
+
     {
       for (int j = 0; j < mapHeight; j++)
       {
-        tiles[i][j] = 1;
+        tiles[i][j] = MyConstants.WALL;
       }
     }
 
@@ -339,7 +241,7 @@ public class BSPTree
     {
       for (int j = room.getY1() + 1; j < room.getY2(); j++)
       {
-        tiles[i][j] = 0;
+        tiles[i][j] = MyConstants.FLOOR;
       }
     }
   }
@@ -386,9 +288,11 @@ public class BSPTree
     }
   }
 
-  public Leaf getRandomRoomCenter()
+  public Point getRandomRoomCenter()
   {
-    return this.leafs.get(Randomizer.generate(0, leafs.size() - 1));
+
+    return this.leafs.get(1).getRoom().center();
+
   }
 
   public static int getMAX_LEAF_SIZE()

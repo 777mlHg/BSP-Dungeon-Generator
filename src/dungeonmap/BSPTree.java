@@ -1,3 +1,5 @@
+package src.dungeonmap;
+
 import java.util.ArrayList;
 
 /**
@@ -133,6 +135,11 @@ class Leaf
     return h;
   }
 
+  public Point getRoomCenter()
+  {
+    return room.center();
+  }
+
   public boolean splitLeaf()
   {
     if (leftChild != null || rightChild != null)
@@ -239,7 +246,7 @@ class Leaf
 public class BSPTree
 {
 
-  private int[][] level; // initialize the level array
+  private int[][] tiles; // initialize the level array
   // NOTE: tweaking finals below will change generation algorithm
   final private static int MAX_LEAF_SIZE = 24; // leaf Section size limit
   final private static int ROOM_MAX_SIZE = 15;
@@ -247,6 +254,8 @@ public class BSPTree
 
   private int mapWidth;
   private int mapHeight;
+
+  ArrayList<Leaf> leafs;
 
   /**
    * implementation of BSP on 2D matrix representing a map.
@@ -271,34 +280,33 @@ public class BSPTree
    */
   public int[][] generateLeafs()
   {
-
     if (mapWidth < 15 || mapHeight < 15)
     {
       throw new java.lang.Error("map width and map height must be larger than 15");
     }
 
-    level = new int[mapWidth][mapHeight];
+    tiles = new int[mapWidth][mapHeight];
     for (int i = 0; i < mapWidth; i++)
     {
       for (int j = 0; j < mapHeight; j++)
       {
-        level[i][j] = 1;
+        tiles[i][j] = 1;
       }
     }
 
-    ArrayList<Leaf> _leafs = new ArrayList<Leaf>();
+    leafs = new ArrayList<Leaf>();
 
     Leaf root = new Leaf(0, 0, mapWidth, mapHeight);
-    _leafs.add(root);
+    leafs.add(root);
 
     boolean didSplit = true;
 
     while (didSplit)
     {
       didSplit = false;
-      for (int i = 0; i < _leafs.size(); i++)
+      for (int i = 0; i < leafs.size(); i++)
       {
-        Leaf lHelper = _leafs.get(i);
+        Leaf lHelper = leafs.get(i);
         if (lHelper.leftChild == null && lHelper.rightChild == null)
         {
           if (lHelper.getWidth() > MAX_LEAF_SIZE || lHelper.getHeight() > MAX_LEAF_SIZE
@@ -306,8 +314,8 @@ public class BSPTree
           {
             if (lHelper.splitLeaf())
             {
-              _leafs.add(lHelper.leftChild);
-              _leafs.add(lHelper.rightChild);
+              leafs.add(lHelper.leftChild);
+              leafs.add(lHelper.rightChild);
               didSplit = true;
 
             }
@@ -317,7 +325,7 @@ public class BSPTree
 
     }
     root.createRooms(this); // create the room using the leaf splits
-    return level; // return the level array 1 for wall 0 for floor
+    return tiles; // return the level array 1 for wall 0 for floor
   }
 
   /**
@@ -331,7 +339,7 @@ public class BSPTree
     {
       for (int j = room.getY1() + 1; j < room.getY2(); j++)
       {
-        level[i][j] = 0;
+        tiles[i][j] = 0;
       }
     }
   }
@@ -366,7 +374,7 @@ public class BSPTree
   {
     for (int i = Math.min(x1, x2); i < Math.max(x1, x2) + 1; i++)
     {
-      level[i][y] = 0;
+      tiles[i][y] = 0;
     }
   }
 
@@ -374,8 +382,13 @@ public class BSPTree
   {
     for (int i = Math.min(y1, y2); i < Math.max(y1, y2) + 1; i++)
     {
-      level[x][i] = 0;
+      tiles[x][i] = 0;
     }
+  }
+
+  public Leaf getRandomRoomCenter()
+  {
+    return this.leafs.get(Randomizer.generate(0, leafs.size() - 1));
   }
 
   public static int getMAX_LEAF_SIZE()
@@ -402,4 +415,5 @@ public class BSPTree
   {
     return this.mapWidth;
   }
+
 }

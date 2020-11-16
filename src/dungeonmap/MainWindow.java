@@ -12,7 +12,6 @@ public class MainWindow extends JFrame
   private int mapPanelHeight = 40; // set default size for mapPanel
 
   private PaintGeneratedMap mapPanel;
-  // private JFrame mapFrame = new JFrame("Map");
 
   private static JFrame app = new JFrame("Dungeon Map Generator GUI"); // Main window
   private static JPanel inputsContainerPanel = new JPanel();
@@ -39,7 +38,6 @@ public class MainWindow extends JFrame
   {
     inputsContainerPanel.setLayout(new BorderLayout());
 
-    // mapInputsPanel.setLayout(new GridLayout());
     mapInputsPanel.add(heightJLabel);
     mapInputsPanel.add(heightTextfield);
 
@@ -48,7 +46,6 @@ public class MainWindow extends JFrame
     mapInputsPanel.add(wallColorButton);
     mapInputsPanel.add(floorColorButton);
 
-    // generatePanel.setLayout(new GridLayout());
     generateButton.setPreferredSize(new Dimension(420, 30));
     generatePanel.add(generateButton);
 
@@ -99,16 +96,15 @@ public class MainWindow extends JFrame
         // if mapwidth or mapheight is less than 15 popup message box
         try
         {
-          app.setSize(new Dimension((mapPanelWidth + 7) * 20, (mapPanelHeight + 8) * 20));
           mapPanel = new PaintGeneratedMap(mapPanelWidth, mapPanelHeight, floorColor,
                   wallColor);
+          app.setSize(new Dimension(((mapPanelWidth < 15 ? 20 : mapPanelWidth) + 7) * 20, (mapPanelHeight + 7) * 20));
 
           // mapPanel.setLayout(new BoxLayout(mapPanel, BoxLayout.Y_AXIS));
           // https://stackoverflow.com/questions/9347076/how-to-remove-all-components-from-a-jframe-in-java
 
-          // mapPanel.revalidate();
-          // mapPanel.setVisible(true);
-          // app.add(inputsContainerPanel, BorderLayout.NORTH);
+          app.getContentPane().removeAll();
+          app.add(inputsContainerPanel, BorderLayout.NORTH);
           app.add(mapPanel);
           app.revalidate();
 

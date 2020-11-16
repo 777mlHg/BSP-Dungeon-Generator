@@ -237,7 +237,7 @@ public class BSPTree
    */
   public void createRoom(Rectangle room)
   {
-    for (int i = room.getX1(); i < room.getX2(); i++)
+    for (int i = room.getX1() + 1; i < room.getX2(); i++) // ` room.getX1() + 1` +1 so that all rooms are sourrounded by walls
     {
       for (int j = room.getY1() + 1; j < room.getY2(); j++)
       {
@@ -288,10 +288,10 @@ public class BSPTree
     }
   }
 
-  public Point getRandomRoomCenter()
+  public Point getRoomCenter() // used for inital player location
   {
 
-    return this.leafs.get(1).getRoom().center();
+    return this.leafs.get(0).getRoom().center();
 
   }
 

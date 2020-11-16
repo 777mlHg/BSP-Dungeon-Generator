@@ -11,7 +11,6 @@ import javax.swing.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -24,11 +23,11 @@ public class PaintGeneratedMap extends JPanel
 
   private BufferedImage playerImage; // image of the player
 
-  private BSPTree mapRaw; // initalize the map
+  private BSPTree mapBSP; // initalize the map
   private int[][] level; // map in array representaion
 
-  int posX; // player postition x
-  int posY; // player postition y
+  private int playerPosX; // player postition x
+  private int playerPosY; // player postition y
 
   /**
    * 
@@ -42,14 +41,13 @@ public class PaintGeneratedMap extends JPanel
     this.wallColor = wColor;
     this.floorColor = fColor;
     loadPlayerImage(); // load the image so paintComponet can draw it
-    this.mapRaw = new BSPTree(mapWidth, mapHeight); // create a new map
-    this.level = mapRaw.generateLeafs(); // create a new level
-    System.out.println(Arrays.deepToString(level));
+    this.mapBSP = new BSPTree(mapWidth, mapHeight); // create a new map
+    this.level = mapBSP.generateLeafs(); // create a new level
 
     // initalize player inital location
-    posX = mapRaw.getRandomRoomCenter().getX();
-    posY = mapRaw.getRandomRoomCenter().getY();
-    level[posX][posY] = MyConstants.PLAYER;// 3
+    playerPosX = mapBSP.getRoomCenter().getX();
+    playerPosY = mapBSP.getRoomCenter().getY();
+    level[playerPosX][playerPosY] = MyConstants.PLAYER;// initalize player location on the levels
 
     // TODO: Stop gap. Use margins to offset?
     setBackground(wallColor);
@@ -62,21 +60,16 @@ public class PaintGeneratedMap extends JPanel
       {
         try
         {
-          System.out.println("asd");
-
-          posX -= 1;
-          if (level[posX][posY] == MyConstants.WALL)
+          playerPosX -= 1;
+          if (level[playerPosX][playerPosY] == MyConstants.WALL)
           {
-            posX += 1;
+            playerPosX += 1;
           }
         }
         catch (Exception e)
         {
-          // TODO: handle exception
           System.out.println(e);
-
         }
-        System.out.println(posX);
         repaint();
       }
     };
@@ -88,19 +81,16 @@ public class PaintGeneratedMap extends JPanel
       {
         try
         {
-          posX += 1;
-          if (level[posX][posY] == MyConstants.WALL)
+          playerPosX += 1;
+          if (level[playerPosX][playerPosY] == MyConstants.WALL)
           {
-            posX -= 1;
+            playerPosX -= 1;
           }
-          System.out.println(posX);
         }
         catch (Exception e)
         {
-          // TODO: handle exception
           System.out.println(e);
         }
-
         repaint();
       }
     };
@@ -111,20 +101,16 @@ public class PaintGeneratedMap extends JPanel
       {
         try
         {
-          posY -= 1;
-          if (level[posX][posY] == MyConstants.WALL)
+          playerPosY -= 1;
+          if (level[playerPosX][playerPosY] == MyConstants.WALL)
           {
-            posY += 1;
+            playerPosY += 1;
           }
         }
         catch (Exception e)
         {
-          // TODO: handle exception
           System.out.println(e);
-
         }
-        System.out.println(posY);
-
         repaint();
       }
     };
@@ -135,43 +121,35 @@ public class PaintGeneratedMap extends JPanel
       {
         try
         {
-          posY += 1;
-          if (level[posX][posY] == MyConstants.WALL)
+          playerPosY += 1;
+          if (level[playerPosX][playerPosY] == MyConstants.WALL)
           {
-            posY -= 1;
+            playerPosY -= 1;
           }
         }
         catch (Exception e)
         {
-          // TODO: handle exception
           System.out.println(e);
-
         }
-        System.out.println(posY);
-
         repaint();
       }
     };
 
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), leftAction);
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_KP_LEFT, 0), leftAction);
-    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_4, 0), leftAction);
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.left", KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), leftAction);
 
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), rightAction);
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_KP_RIGHT, 0), rightAction);
-    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), rightAction);
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.right", KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), rightAction);
     // up
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), upAction);
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0), upAction);
-    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), upAction);
-    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), upAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.up", KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), upAction);
     // down
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), downAction);
     bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), downAction);
-    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_6, 0), downAction);
-    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), downAction);
+    bindKeyStroke(WHEN_IN_FOCUSED_WINDOW, "move.down", KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), downAction);
 
   }
 
@@ -202,19 +180,15 @@ public class PaintGeneratedMap extends JPanel
           g2d.setColor(wallColor);
           g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20); // +1 to add margin
         }
-        else
+        else // something on top of a floor tile; fill with floor
         {
           g2d.setColor(floorColor);
           g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);
         }
       }
     }
-
-    g2d.drawImage(playerImage, (posX + 1) * 20, (posY + 1) * 20, null);
-
+    g2d.drawImage(playerImage, (playerPosX + 1) * 20, (playerPosY + 1) * 20, null);
     g2d.dispose();
-    System.out.println("end");
-
   }
 
   private BufferedImage loadPlayerImage()
@@ -222,7 +196,7 @@ public class PaintGeneratedMap extends JPanel
     try
     {
       playerImage = ImageIO.read(new File("./images/apic.png"));
-
+      // playerImage = ImageIO.read(new File("/src/dungeonmap/apic.png"));
     }
     catch (IOException e)
     {

@@ -2,15 +2,17 @@ package src.dungeonmap;
 
 import src.dungeonmap.common.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * BSP algorithm; divide the map until MIN_SIZE;then fill the leaves with a
  * room; Converted from actionscript to java
  * https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268
  */
+
 class Leaf
 {
-  final private int MIN_LEAF_SIZE = 10;
+  final private int MIN_LEAF_SIZE = 8;
   private int x;
   private int y;
   private int w;
@@ -26,16 +28,6 @@ class Leaf
     this.y = y;
     this.w = width;
     this.h = height;
-  }
-
-  public int getWidth()
-  {
-    return w;
-  }
-
-  public int getHeight()
-  {
-    return h;
   }
 
   public boolean splitLeaf()
@@ -101,6 +93,7 @@ class Leaf
       int y = Randomizer.generate(this.y, this.y + (this.h - 1) - height);
 
       room = new Rectangle(x, y, width, height);
+
       bspTreeInstance.createRoom(room);
 
     }
@@ -108,27 +101,36 @@ class Leaf
 
   public Rectangle getRoom()
   {
-    if (room != null)
+    if (this.room != null)
     {
-      return room;
+      return this.room;
     }
     else
     {
-      Rectangle lRoom = leftChild != null ? leftChild.getRoom() : null;
-      Rectangle rRoom = rightChild != null ? rightChild.getRoom() : null;
-      if (lRoom == null && rRoom == null)
+      Rectangle lRoom = null;
+      Rectangle rRoom = null;
+      if (this.leftChild != null)
+      {
+        lRoom = this.leftChild.getRoom();
+      }
+      if (this.rightChild != null)
+      {
+        rRoom = this.rightChild.getRoom();
+      }
+      if (this.leftChild == null && this.rightChild == null)
       {
         return null;
       }
-      else if (rRoom == null)
+      else if (rRoom != null)
       {
         return lRoom;
       }
-      else if (lRoom == null)
+      else if (lRoom != null)
       {
         return rRoom;
       }
-      else if (Math.random() > 0.5)
+
+      else if (Math.random() < 0.5)
       {
         return lRoom;
       }
@@ -139,6 +141,16 @@ class Leaf
 
     }
   }
+
+  public int getWidth()
+  {
+    return w;
+  }
+
+  public int getHeight()
+  {
+    return h;
+  }
 }
 
 public class BSPTree
@@ -146,9 +158,9 @@ public class BSPTree
 
   private int[][] tiles; // initialize the level array
   // NOTE: tweaking finals below will change generation algorithm
-  final private static int MAX_LEAF_SIZE = 24; // leaf Section size limit
-  final private static int ROOM_MAX_SIZE = 15;
-  final private static int ROOM_MIN_SIZE = 8;
+  final private static int MAX_LEAF_SIZE = 25; // leaf Section size limit
+  final private static int ROOM_MAX_SIZE = 24;
+  final private static int ROOM_MIN_SIZE = 7;
 
   private int mapWidth;
   private int mapHeight;
@@ -237,7 +249,7 @@ public class BSPTree
    */
   public void createRoom(Rectangle room)
   {
-    for (int i = room.getX1() + 1; i < room.getX2(); i++) // ` room.getX1() + 1` +1 so that all rooms are sourrounded by walls
+    for (int i = room.getX1() + 1; i < room.getX2(); i++) // `room.getX1() + 1` +1 so that all rooms are sourrounded by walls
     {
       for (int j = room.getY1() + 1; j < room.getY2(); j++)
       {
@@ -254,10 +266,10 @@ public class BSPTree
    */
   public void createPath(Rectangle roomLeft, Rectangle roomRight)
   {
-    int leftX = roomLeft.center().getX();
-    int leftY = roomLeft.center().getY();
-    int rightX = roomRight.center().getX();
-    int rightY = roomRight.center().getY();
+    int leftX = roomLeft.getCenter().getX();
+    int leftY = roomLeft.getCenter().getY();
+    int rightX = roomRight.getCenter().getX();
+    int rightY = roomRight.getCenter().getY();
 
     if (Math.random() > 0.5)
     {
@@ -288,11 +300,10 @@ public class BSPTree
     }
   }
 
-  public Point getRoomCenter() // used for inital player location
+  public MyPoint getRandomPlayerLocation() // used for inital player location
   {
-
-    return this.leafs.get(0).getRoom().center();
-
+    MyPoint locations = this.leafs.get(Randomizer.generate(0, this.leafs.size() - 1)).getRoom().getCenter();
+    return locations;
   }
 
   public static int getMAX_LEAF_SIZE()

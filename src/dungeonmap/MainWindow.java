@@ -77,9 +77,9 @@ public class MainWindow extends JFrame
 
     public void actionPerformed(ActionEvent event)
     {
-      // https://stackoverflow.com/questions/26565166/how-to-display-a-color-selector-when-clicking-a-button
       if (event.getSource() == wallColorButton)
       {
+        // https://stackoverflow.com/questions/26565166/how-to-display-a-color-selector-when-clicking-a-button
         wallColor = JColorChooser.showDialog(MainWindow.this, "Pick the Wall Color", wallColor);
         wallColorButton.setBackground(wallColor);
       }
@@ -99,24 +99,17 @@ public class MainWindow extends JFrame
           mapPanel = new PaintGeneratedMap(mapPanelWidth, mapPanelHeight, floorColor,
                   wallColor);
           app.setSize(new Dimension(((mapPanelWidth < 15 ? 20 : mapPanelWidth) + 7) * 20, (mapPanelHeight + 7) * 20));
-
-          // mapPanel.setLayout(new BoxLayout(mapPanel, BoxLayout.Y_AXIS));
-          // https://stackoverflow.com/questions/9347076/how-to-remove-all-components-from-a-jframe-in-java
-
           app.getContentPane().removeAll();
           app.add(inputsContainerPanel, BorderLayout.NORTH);
           app.add(mapPanel);
-          app.revalidate();
-
         }
         catch (Error e)
         {
           System.err.println(e);
           JOptionPane.showMessageDialog(app, "Map width and map height must be larger than 15!");
         }
+        app.revalidate();
       }
     }
   }
 }
-// TODO: change to gridbaglayout?
-// https://docs.oracle.com/javase/tutorial/uiswing/layout/gridbag.html

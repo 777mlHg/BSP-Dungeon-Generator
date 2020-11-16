@@ -21,34 +21,33 @@ public class Rectangle
 
   public int getX1()
   {
-    return x1;
+    return this.x1;
   }
 
   public int getX2()
   {
-    return x2;
+    return this.x2;
   }
 
   public int getY1()
   {
-    return y1;
+    return this.y1;
   }
 
   public int getY2()
   {
-    return y2;
+    return this.y2;
   }
 
   /**
    * @author https://eskerda.com/bsp-dungeon-generation/
    * @return center of the rectangle
    */
-  public Point center()
+  public MyPoint getCenter()
   {
-    int centerX = Math.round((this.x1 + this.x2) / 2);
-    int centerY = Math.round((this.y1 + this.y2) / 2);
-
-    Point centerPointObject = new Point(centerX, centerY);
+    int centerX = (int)Math.floor((this.x1 + this.x2) / 2);
+    int centerY = (int)Math.floor((this.y1 + this.y2) / 2);
+    MyPoint centerPointObject = new MyPoint(centerX, centerY);
     return centerPointObject;
   }
 

@@ -1,6 +1,6 @@
 package src.dungeonmap;
 
-import src.dungeonmap.common.MyConstants;
+import src.dungeonmap.common.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,6 @@ import javax.swing.*;
 
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 public class PaintGeneratedMap extends JPanel
@@ -29,8 +28,9 @@ public class PaintGeneratedMap extends JPanel
   private int playerPosX; // player postition x
   private int playerPosY; // player postition y
 
+  private MyPoint randLocation;
+
   /**
-   * 
    * @param mapWidth
    * @param mapHeight
    * @param fColor
@@ -45,16 +45,18 @@ public class PaintGeneratedMap extends JPanel
     this.level = mapBSP.generateLeafs(); // create a new level
 
     // initalize player inital location
-    playerPosX = mapBSP.getRoomCenter().getX();
-    playerPosY = mapBSP.getRoomCenter().getY();
+    randLocation = mapBSP.getRandomPlayerLocation();
+    playerPosX = randLocation.getX();
+    playerPosY = randLocation.getY();
     level[playerPosX][playerPosY] = MyConstants.PLAYER;// initalize player location on the levels
 
-    // TODO: Stop gap. Use margins to offset?
     setBackground(wallColor);
 
     // https://stackoverflow.com/questions/31442009/how-to-move-an-object-in-a-jpanel-using-the-arrow-keys
     Action leftAction = new AbstractAction()
     {
+      private static final long serialVersionUID = -18539120376648511L;
+
       @Override
       public void actionPerformed(ActionEvent event)// left
       {
@@ -76,6 +78,9 @@ public class PaintGeneratedMap extends JPanel
 
     Action rightAction = new AbstractAction()
     {
+
+      private static final long serialVersionUID = 7528191262218438115L;
+
       @Override
       public void actionPerformed(ActionEvent event) // right
       {
@@ -96,6 +101,9 @@ public class PaintGeneratedMap extends JPanel
     };
     Action upAction = new AbstractAction()
     {
+
+      private static final long serialVersionUID = 9194706786236456884L;
+
       @Override
       public void actionPerformed(ActionEvent event) // up
       {
@@ -116,6 +124,9 @@ public class PaintGeneratedMap extends JPanel
     };
     Action downAction = new AbstractAction()
     {
+
+      private static final long serialVersionUID = 52524593877974808L;
+
       @Override
       public void actionPerformed(ActionEvent event) // down
       {
@@ -155,10 +166,9 @@ public class PaintGeneratedMap extends JPanel
 
   protected void paintComponent(Graphics graphics)
   {
-
     super.paintComponent(graphics);
     // iterate throught the 2D array BSP level.
-    int tileIntRepresentation;
+    int tileRepresentation;
     int j;
     int i;
     Graphics2D g2d = (Graphics2D)graphics.create();
@@ -168,35 +178,34 @@ public class PaintGeneratedMap extends JPanel
     {
       for (j = 0; j < level[i].length; j++)
       {
-        tileIntRepresentation = level[i][j];
+        tileRepresentation = level[i][j];
 
-        if (tileIntRepresentation == MyConstants.FLOOR)
+        if (tileRepresentation == MyConstants.FLOOR)
         {
           g2d.setColor(floorColor);
-          g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);// +1 to add margin
+          g2d.fillRect((i) * 20, (j) * 20, 20, 20);
         }
-        else if (tileIntRepresentation == MyConstants.WALL)
+        else if (tileRepresentation == MyConstants.WALL)
         {
           g2d.setColor(wallColor);
-          g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20); // +1 to add margin
+          g2d.fillRect((i) * 20, (j) * 20, 20, 20);
         }
         else // something on top of a floor tile; fill with floor
         {
           g2d.setColor(floorColor);
-          g2d.fillRect((i + 1) * 20, (j + 1) * 20, 20, 20);
+          g2d.fillRect((i) * 20, (j) * 20, 20, 20);
         }
       }
     }
-    g2d.drawImage(playerImage, (playerPosX + 1) * 20, (playerPosY + 1) * 20, null);
+    g2d.drawImage(playerImage, (playerPosX) * 20, (playerPosY) * 20, null);
     g2d.dispose();
   }
 
-  private BufferedImage loadPlayerImage()
+  private BufferedImage loadPlayerImage()// laod the player's image
   {
     try
     {
-      playerImage = ImageIO.read(new File("./images/apic.png"));
-      // playerImage = ImageIO.read(new File("/src/dungeonmap/apic.png"));
+      playerImage = ImageIO.read(new File("./images/pika.png"));
     }
     catch (IOException e)
     {
@@ -205,6 +214,15 @@ public class PaintGeneratedMap extends JPanel
     return playerImage;
   }
 
+  /**
+   * https://stackoverflow.com/questions/31442009/how-to-move-an-object-in-a-jpanel-using-the-arrow-keys
+   * 
+   * @author MadProgrammer
+   * @param condition
+   * @param name
+   * @param keyStroke
+   * @param action
+   */
   protected void bindKeyStroke(int condition, String name, KeyStroke keyStroke, Action action)
   {
     InputMap im = getInputMap(condition);

@@ -6,6 +6,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "CodeLens (Launch) - AStar",
+      "request": "launch",
+      "mainClass": "src.dungeonmap.AStar",
+      "projectName": "BSP-Dungeon-Generator_5768a24d"
+    },
+    {
+      "type": "java",
+      "name": "CodeLens (Launch) - ShortestPath",
+      "request": "launch",
+      "mainClass": "src.dungeonmap.ShortestPath",
+      "projectName": "BSP-Dungeon-Generator_5768a24d"
+    },
+    {
+      "type": "java",
       "name": "Debug (Launch) - Current File",
       "request": "launch",
       "mainClass": "${workspaceFolder}/src/dungeonmap/main.java"

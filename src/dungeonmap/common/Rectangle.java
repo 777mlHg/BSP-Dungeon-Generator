@@ -1,7 +1,7 @@
 package src.dungeonmap.common;
 
 /**
- * Rectangle structure; represents Rectangle in actionscript
+ * Rectangle structure; represents Rectangle in actionScript
  * https://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/Rectangle.html
  */
 public class Rectangle

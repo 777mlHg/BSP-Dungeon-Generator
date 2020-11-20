@@ -117,7 +117,7 @@ public class MapPanel extends JPanel
   private ArrayList<Monster> generateEnemies()
   {
     int tileRepresentation;
-    ArrayList<Monster> enemies = new ArrayList<>();
+    ArrayList<Monster> monsters = new ArrayList<>();
     for (int i = 0; i < mapWidth; i++)
     {
       for (int j = 0; j < mapHeight; j++)
@@ -127,12 +127,12 @@ public class MapPanel extends JPanel
         {
           if (player.getPositionX() != i && player.getPositionY() != j)
           {
-            enemies.add(new Monster("Monster" + i + j, 10, 1, i, j));
+            monsters.add(new Monster("Monster " + monsters.size(), 10, 1, i, j));
           }
         }
       }
     }
-    return enemies;
+    return monsters;
   }
 
   public boolean isValidPosition(int x, int y)
@@ -145,21 +145,28 @@ public class MapPanel extends JPanel
 
     playerMX += player.getPositionX();
     playerMY += player.getPositionY();
-    if (isValidPosition(playerMX, playerMY))
+    try
     {
-      Monster monsterAtPlace = getMonster(playerMX, playerMY);
-      if (monsterAtPlace != null)
+      if (isValidPosition(playerMX, playerMY))
       {
-        monsterAtPlace.interact(player);
-        if (monsterAtPlace.shouldRemove())
+        Monster monsterAtPlace = getMonster(playerMX, playerMY);
+        if (monsterAtPlace != null)
         {
-          monsterList.remove(monsterAtPlace);
+          monsterAtPlace.interact(player);
+          if (monsterAtPlace.shouldRemove())
+          {
+            monsterList.remove(monsterAtPlace);
+          }
+        }
+        else
+        {
+          player.move(playerMX - player.getPositionX(), playerMY - player.getPositionY());
         }
       }
-      else
-      {
-        player.move(playerMX - player.getPositionX(), playerMY - player.getPositionY());
-      }
+    }
+    catch (Exception e)
+    {
+      System.out.println(e.getMessage() + " out of bounds");
     }
     repaint();
   }
@@ -181,21 +188,28 @@ public class MapPanel extends JPanel
   {
     monsterMX += monster.getPositionX();
     monsterMY += monster.getPositionY();
-
-    if (isValidPosition(monsterMX, monsterMY))
+    try
     {
-      if (getMonster(monsterMX, monsterMY) == null)
+      if (isValidPosition(monsterMX, monsterMY))
       {
-        if (player.getPositionX() == monsterMX && player.getPositionY() == monsterMY)
+        if (getMonster(monsterMX, monsterMY) == null)
         {
-          monster.attack(player);
-        }
-        else
-        {
-          monster.move(monsterMX - monster.getPositionX(), monsterMY - monster.getPositionY());
+          if (player.getPositionX() == monsterMX && player.getPositionY() == monsterMY)
+          {
+            monster.attack(player);
+          }
+          else
+          {
+            monster.move(monsterMX - monster.getPositionX(), monsterMY - monster.getPositionY());
+          }
         }
       }
     }
+    catch (Exception e)
+    {
+      System.out.println(e.getMessage());
+    }
+
   }
 
   public void moveMonsters()
@@ -212,10 +226,12 @@ public class MapPanel extends JPanel
       if (Math.abs(playerX - monsterX) < MyConstants.TRIGGER_DIST &&
               Math.abs(playerY - monsterY) < MyConstants.TRIGGER_DIST)
       {
-        AStar as = new AStar(level, monsterX, monsterY, true);
+
+        AStar as = new AStar(level, monsterX, monsterY, false);
         List<AStar.Node> path = as.findPathTo(playerX, playerY);
         int movementX = path.get(1).x - monsterX;
         int movementY = path.get(1).y - monsterY;
+
         handleMonsters(monster, movementX, movementY);
       }
     }

@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import src.dungeonmap.common.ImageLoader;
 
 /**
- * Represents the player. The player has an inventory of items they can use.
+ * Represents the player.
  */
 
 public class Player extends Character
@@ -15,8 +15,7 @@ public class Player extends Character
   public Player(String name, int maxHealth, int attackDamage)
   {
     super(name, maxHealth, attackDamage, 0, 0);
-    this.playerImage = ImageLoader.getImage("./images/pika.png");
-
+    this.playerImage = ImageLoader.getImage("./images/player.png");
   }
 
   public BufferedImage getPlayerImage()

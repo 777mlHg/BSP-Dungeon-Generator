@@ -11,7 +11,7 @@ public class Monster extends Character
   public Monster(String name, int maxHealth, int attackDamage, int positionX, int positionY)
   {
     super(name, maxHealth, attackDamage, positionX, positionY);
-    this.monsterImage = ImageLoader.getImage("./images/apic.png");
+    this.monsterImage = ImageLoader.getImage("./images/monster.png");
   }
 
   public BufferedImage getMonsterImage()

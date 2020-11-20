@@ -8,10 +8,10 @@ public class MainWindow extends JFrame
 {
   private static final long serialVersionUID = 1L; // remove warning
 
-  private int mapPanelWidth = 40; // set default size for mapPanel
-  private int mapPanelHeight = 40; // set default size for mapPanel
+  private int mapPanelWidth = 30; // set default size for mapPanel
+  private int mapPanelHeight = 30; // set default size for mapPanel
 
-  private PaintGeneratedMap mapPanel;
+  private MapPanel mapPanel;
 
   private static JFrame app = new JFrame("Dungeon Map Generator GUI"); // Main window
   private static JPanel inputsContainerPanel = new JPanel();
@@ -25,24 +25,26 @@ public class MainWindow extends JFrame
   private JButton wallColorButton = new JButton("Wall Color");
   private JButton floorColorButton = new JButton("Floor Color");
 
-  private JTextField widthTextfield = new JTextField(3);
-  private JTextField heightTextfield = new JTextField(3);
+  private JTextField widthTextField = new JTextField(3);
+  private JTextField heightTextField = new JTextField(3);
 
   private ButtonHandler buttonHandler;
   private JButton generateButton = new JButton("Generate");
 
-  private Color wallColor = Color.gray;
-  private Color floorColor = Color.white;
+  private Color wallColor = Color.gray; // set the default wall color
+  private Color floorColor = Color.white;// set the default floor color
+
+  KeyEventListener keyEventListener;
 
   public MainWindow()
   {
     inputsContainerPanel.setLayout(new BorderLayout());
 
     mapInputsPanel.add(heightJLabel);
-    mapInputsPanel.add(heightTextfield);
+    mapInputsPanel.add(heightTextField);
 
     mapInputsPanel.add(widthJLabel);
-    mapInputsPanel.add(widthTextfield);
+    mapInputsPanel.add(widthTextField);
     mapInputsPanel.add(wallColorButton);
     mapInputsPanel.add(floorColorButton);
 
@@ -52,8 +54,8 @@ public class MainWindow extends JFrame
     containerPanel.setLayout(new BorderLayout());
     containerPanel.add(mapInputsPanel, BorderLayout.NORTH);
     containerPanel.add(generatePanel, BorderLayout.LINE_START);
-    widthTextfield.setText("" + mapPanelWidth);
-    heightTextfield.setText("" + mapPanelHeight);
+    widthTextField.setText("" + mapPanelWidth);
+    heightTextField.setText("" + mapPanelHeight);
 
     buttonHandler = new ButtonHandler();
     wallColorButton.addActionListener(buttonHandler);
@@ -67,49 +69,79 @@ public class MainWindow extends JFrame
     app.add(inputsContainerPanel, BorderLayout.NORTH);
     app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     app.pack();
-    app.setLocationRelativeTo(null);
+    // app.setLocationRelativeTo(null);
     app.setVisible(true);
+
+    app.setFocusable(true);
+    app.requestFocusInWindow();
+    generate();
+
   }
 
-  // https://stackoverflow.com/questions/38642034/how-do-i-provide-a-single-button-handler-object
+  /**
+   * 
+   * https://stackoverflow.com/questions/38642034/how-do-i-provide-a-single-button-handler-object
+   * map the app's button to their intended function
+   */
   private class ButtonHandler implements ActionListener
   {
-
     public void actionPerformed(ActionEvent event)
     {
+
+      // wall color button
       if (event.getSource() == wallColorButton)
       {
         // https://stackoverflow.com/questions/26565166/how-to-display-a-color-selector-when-clicking-a-button
         wallColor = JColorChooser.showDialog(MainWindow.this, "Pick the Wall Color", wallColor);
         wallColorButton.setBackground(wallColor);
       }
+      // floor color button
       else if (event.getSource() == floorColorButton)
       {
         floorColor = JColorChooser.showDialog(MainWindow.this, "Pick the Floor Color", floorColor);
         floorColorButton.setBackground(floorColor);
       }
-      else if (event.getSource() == generateButton) // make a new window with the map
+      // generate map button; if button is pressed generate a new map panel
+      else if (event.getSource() == generateButton)
       {
-        mapPanelWidth = Integer.parseInt(widthTextfield.getText());
-        mapPanelHeight = Integer.parseInt(heightTextfield.getText());
-
-        // if mapwidth or mapheight is less than 15 popup message box
-        try
-        {
-          mapPanel = new PaintGeneratedMap(mapPanelWidth, mapPanelHeight, floorColor,
-                  wallColor);
-          app.setSize(new Dimension(((mapPanelWidth < 15 ? 20 : mapPanelWidth) + 7) * 20, (mapPanelHeight + 7) * 20));
-          app.getContentPane().removeAll();
-          app.add(inputsContainerPanel, BorderLayout.NORTH);
-          app.add(mapPanel);
-        }
-        catch (Error e)
-        {
-          System.err.println(e);
-          JOptionPane.showMessageDialog(app, "Map width and map height must be larger than 15!");
-        }
-        app.revalidate();
+        mapPanelWidth = Integer.parseInt(widthTextField.getText());
+        mapPanelHeight = Integer.parseInt(heightTextField.getText());
+        generate();
       }
     }
+  }
+
+  public void generate()
+  {
+    try
+    {
+      this.mapPanel = new MapPanel(mapPanelWidth, mapPanelHeight, floorColor, wallColor);
+      // set app size to conform to the map panel size
+      app.setSize(new Dimension(((mapPanelWidth < 15 ? 20 : mapPanelWidth) + 7) * 20, (mapPanelHeight + 7) * 20));
+    }
+    catch (Error e)
+    {
+      System.err.println(e);
+      // if mapWidth or mapHeight is less than 15 popup message box
+      JOptionPane.showMessageDialog(app, "Map width and map height must be larger than 15!");
+    }
+    // remove everything to repaint the map panel
+    // TODO: remove only map panel to repaint map panel
+    app.getContentPane().removeAll();
+    app.add(inputsContainerPanel, BorderLayout.NORTH);
+
+    app.removeKeyListener(keyEventListener);
+    // add key listener to the app J frame
+    // TODO: add key listener to map panel
+    keyEventListener = new KeyEventListener(this);
+    app.addKeyListener(keyEventListener);
+
+    app.add(mapPanel);
+    app.revalidate();
+  }
+
+  public MapPanel getMapPanel()
+  {
+    return mapPanel;
   }
 }

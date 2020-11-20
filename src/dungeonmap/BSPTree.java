@@ -2,11 +2,10 @@ package src.dungeonmap;
 
 import src.dungeonmap.common.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * BSP algorithm; divide the map until MIN_SIZE;then fill the leaves with a
- * room; Converted from actionscript to java
+ * room; Converted from actionScript to java
  * https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268
  */
 
@@ -17,7 +16,7 @@ class Leaf
   private int y;
   private int w;
   private int h;
-  private Rectangle room; // compostiton; leaf has a Rectangle
+  private Rectangle room; // composition; leaf has a Rectangle
 
   public Leaf leftChild;
   public Leaf rightChild;
@@ -165,7 +164,7 @@ public class BSPTree
   private int mapWidth;
   private int mapHeight;
 
-  ArrayList<Leaf> leafs;
+  private ArrayList<Leaf> leafs;
 
   /**
    * implementation of BSP on 2D matrix representing a map.
@@ -176,7 +175,7 @@ public class BSPTree
    * 
    * @param mapWidth
    * @param mapHeight
-   * @return Contructor; Call generateLeafs() to return 2D array
+   * @return Constructor; Call generateLeafs() to return 2D array
    */
   public BSPTree(int mW, int mH)
   {
@@ -231,7 +230,6 @@ public class BSPTree
               leafs.add(lHelper.leftChild);
               leafs.add(lHelper.rightChild);
               didSplit = true;
-
             }
           }
         }
@@ -249,7 +247,7 @@ public class BSPTree
    */
   public void createRoom(Rectangle room)
   {
-    for (int i = room.getX1() + 1; i < room.getX2(); i++) // `room.getX1() + 1` +1 so that all rooms are sourrounded by walls
+    for (int i = room.getX1() + 1; i < room.getX2(); i++) // `room.getX1() + 1` +1 so that all rooms are surrounded by walls
     {
       for (int j = room.getY1() + 1; j < room.getY2(); j++)
       {
@@ -273,22 +271,24 @@ public class BSPTree
 
     if (Math.random() > 0.5)
     {
-      createHorizonalPath(leftX, rightX, leftY);
+      createHorizontalPath(leftX, rightX, leftY);
       createVerticalPath(leftY, rightY, rightX);
     }
     else
     {
       createVerticalPath(leftY, rightY, leftX);
-      createHorizonalPath(leftX, rightX, rightY);
+      createHorizontalPath(leftX, rightX, rightY);
     }
 
   }
 
-  private void createHorizonalPath(int x1, int x2, int y)
+  private void createHorizontalPath(int x1, int x2, int y)
   {
     for (int i = Math.min(x1, x2); i < Math.max(x1, x2) + 1; i++)
     {
       tiles[i][y] = 0;
+      tiles[i][y + 1] = 0;
+      tiles[i][y - 1] = 0;
     }
   }
 
@@ -297,13 +297,15 @@ public class BSPTree
     for (int i = Math.min(y1, y2); i < Math.max(y1, y2) + 1; i++)
     {
       tiles[x][i] = 0;
+      tiles[x + 1][i] = 0;
+      tiles[x - 1][i] = 0;
+
     }
   }
 
-  public MyPoint getRandomPlayerLocation() // used for inital player location
+  public ArrayList<Leaf> getLeafs()
   {
-    MyPoint locations = this.leafs.get(Randomizer.generate(0, this.leafs.size() - 1)).getRoom().getCenter();
-    return locations;
+    return this.leafs;
   }
 
   public static int getMAX_LEAF_SIZE()

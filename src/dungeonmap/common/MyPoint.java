@@ -2,7 +2,7 @@ package src.dungeonmap.common;
 
 /**
  * point data structure;
- * https://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/Point.html
+ * https://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/MyPoint.html
  */
 public class MyPoint
 {
@@ -24,4 +24,5 @@ public class MyPoint
   {
     return this.y;
   }
+
 }

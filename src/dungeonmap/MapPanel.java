@@ -2,7 +2,7 @@ package src.dungeonmap;
 
 import src.dungeonmap.common.MyConstants;
 import src.dungeonmap.common.MyPoint;
-
+import src.dungeonmap.entities.Potion;
 import src.dungeonmap.entities.Monster;
 import src.dungeonmap.entities.Player;
 
@@ -11,7 +11,9 @@ import java.awt.*;
 import javax.swing.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapPanel extends JPanel
 {
@@ -29,6 +31,7 @@ public class MapPanel extends JPanel
 
   int[][] listOfCenters;
   private ArrayList<Monster> monsterList;
+  private ArrayList<Potion> potionList;
 
   /**
    * @param mapWidth
@@ -51,12 +54,16 @@ public class MapPanel extends JPanel
     this.listOfCenters = CenterPoints();
 
     // initialize player and initial location
-    this.player = new Player("Player", 10, 10);
-    this.player.setPositionX(listOfCenters[0][0]);
-    this.player.setPositionY(listOfCenters[0][1]);
+    this.player = new Player("Player", 10, 5);
+    this.player.setPosX(listOfCenters[0][0]);
+    this.player.setPosY(listOfCenters[0][1]);
 
     // create monsters
-    this.monsterList = generateEnemies();
+    this.monsterList = new ArrayList<>();
+    generateMonster();
+    // create heals
+    this.potionList = new ArrayList<>();
+    generatePotions();
 
     setBackground(wallColor);
   }
@@ -64,13 +71,66 @@ public class MapPanel extends JPanel
   protected void paintComponent(Graphics graphics)
   {
     super.paintComponent(graphics);
-    int tileRepresentation;
+    // draw level
+    drawLevel(graphics);
+    // draw HUD
+    drawHUD(graphics);
+
+    // draw heal
+    for (Potion potions : potionList)
+    {
+      graphics.drawImage(potions.getPotionImage(), potions.getPosX() * 20, potions.getPosY() * 20, null);
+    }
+    // draw monster
+    for (Monster monster : monsterList)
+    {
+      graphics.drawImage(monster.getMonsterImage(), monster.getPosX() * 20, monster.getPosY() * 20, null);
+    }
+    // draw the player
+    graphics.drawImage(player.getPlayerImage(), player.getPosX() * 20, player.getPosY() * 20, null);
+    graphics.dispose();
+  }
+
+  public boolean isFloor(int x, int y)
+  {
+    return level[x][y] == MyConstants.FLOOR;
+  }
+
+  /**
+   * 
+   * @return unique center points
+   */
+  public int[][] CenterPoints()
+  {
+    ArrayList<Leaf> mLeafs = mapBSP.getLeafs();
+    MyPoint center;
+    Map<Integer, MyPoint> pointSet = new HashMap<>();
+
+    for (int i = 0; i < mLeafs.size(); i++)
+    {
+      center = mLeafs.get(i).getRoom().getCenter();
+      pointSet.put(center.hashCode(), center);
+    }
+    int[][] uniquePoints = new int[pointSet.size()][2];
+    int counter = 0;
+    for (Map.Entry<Integer, MyPoint> entry : pointSet.entrySet())
+    {
+      uniquePoints[counter][0] = entry.getValue().getX();
+      uniquePoints[counter][1] = entry.getValue().getY();
+      counter++;
+    }
+    return uniquePoints;
+  }
+
+  private void drawLevel(Graphics graphics)
+  {
+
     int j;
     int i;
-    Graphics2D g2d = (Graphics2D)graphics.create();
-
+    int tileRepresentation;
     // https://stackoverflow.com/questions/27463951/java-awt-graphics-for-loop-grid
     // iterate through the 2D array level.
+    // draw the floor and walls
     for (i = 0; i < mapWidth; i++)
     {
       for (j = 0; j < mapHeight; j++)
@@ -79,103 +139,120 @@ public class MapPanel extends JPanel
 
         if (tileRepresentation == MyConstants.FLOOR)
         {
-          g2d.setColor(floorColor);
-          g2d.fillRect((i) * 20, (j) * 20, 20, 20);
+          graphics.setColor(floorColor);
+          graphics.fillRect((i) * 20, (j) * 20, 20, 20);
         }
         else if (tileRepresentation == MyConstants.WALL)
         {
-          g2d.setColor(wallColor);
-          g2d.fillRect((i) * 20, (j) * 20, 20, 20);
+          graphics.setColor(wallColor);
+          graphics.fillRect((i) * 20, (j) * 20, 20, 20);
         }
         // TODO trapped tiles
       }
     }
-
-    // draw monster
-    for (Monster monster : monsterList)
-    {
-      g2d.drawImage(monster.getMonsterImage(), monster.getPositionX() * 20, monster.getPositionY() * 20, null);
-    }
-    // draw the player
-    g2d.drawImage(player.getPlayerImage(), player.getPositionX() * 20, player.getPositionY() * 20, null);
-    g2d.dispose();
   }
 
-  public int[][] CenterPoints()
+  public void drawHUD(Graphics graphics)
   {
-    ArrayList<Leaf> mLeafs = mapBSP.getLeafs();
-    int[][] possiblePoints = new int[mLeafs.size()][2];
-    for (int i = 0; i < mLeafs.size(); i++)
-    {
-      MyPoint centers = mLeafs.get(i).getRoom().getCenter();
-      possiblePoints[i][0] = centers.getX();
-      possiblePoints[i][1] = centers.getY();
-    }
-    return possiblePoints;
+    graphics.setColor(Color.RED);
+    graphics.drawString("Health: " + player.getHealth(), 20, 20);
+    graphics.drawString("Attack Damage: " + player.getAttackDamage(), 20, 40);
+
   }
 
-  private ArrayList<Monster> generateEnemies()
+  public void handlePlayer(int playerMX, int playerMY)
+  {
+    if (player.isAlive())// Check if player is alive
+    {
+      playerMX += player.getPosX(); // get move position
+      playerMY += player.getPosY(); // get move position
+      try
+      {
+        if (isFloor(playerMX, playerMY)) // check if move location is floor
+        {
+          Monster monsterAtPlace = getMonster(playerMX, playerMY);
+          Potion potionAtPlace = getPotionAtPlace(playerMX, playerMY);
+          if (monsterAtPlace != null)
+          {
+            monsterAtPlace.interact(player);
+            if (monsterAtPlace.shouldRemove())
+            {
+              monsterList.remove(monsterAtPlace);
+            }
+          }
+          else if (potionAtPlace != null)
+          {
+            potionAtPlace.heal(player);
+            potionList.remove(potionAtPlace);
+          }
+          else
+          {
+            player.move(playerMX - player.getPosX(), playerMY - player.getPosY());
+          }
+        }
+      }
+      catch (Exception e)
+      {
+        System.out.println(e.getMessage() + " out of bounds");
+      }
+    }
+    else // if dead
+    {
+      JOptionPane.showMessageDialog(this, "You Died!");
+    }
+    repaint();
+  }
+
+  private void generatePotions()
+  {
+    for (int i = 1; i < listOfCenters.length; i++)
+    {
+      potionList.add(new Potion(listOfCenters[i][0], listOfCenters[i][1]));
+    }
+  }
+
+  private Potion getPotionAtPlace(int x, int y)
+  {
+    for (Potion potion : potionList)
+    {
+      if (potion.getPosX() == x && potion.getPosY() == y)
+      {
+        return potion;
+      }
+    }
+    return null;
+  }
+
+  private void generateMonster()
   {
     int tileRepresentation;
-    ArrayList<Monster> monsters = new ArrayList<>();
+    double randomNum;
     for (int i = 0; i < mapWidth; i++)
     {
       for (int j = 0; j < mapHeight; j++)
       {
         tileRepresentation = level[i][j];
-        if (tileRepresentation == MyConstants.FLOOR && Math.random() < MyConstants.MONSTER_SPAWN_CHANCE)
+        randomNum = Math.random();
+        if (tileRepresentation == MyConstants.FLOOR)
         {
-          if (player.getPositionX() != i && player.getPositionY() != j)
+          if (player.getPosX() != i && player.getPosY() != j)
           {
-            monsters.add(new Monster("Monster " + monsters.size(), 10, 1, i, j));
+            if (randomNum < MyConstants.MONSTER_SPAWN_CHANCE)
+            {
+              monsterList.add(new Monster("Monster " + monsterList.size(), 10, 2, i, j));
+            }
           }
         }
+
       }
     }
-    return monsters;
-  }
-
-  public boolean isValidPosition(int x, int y)
-  {
-    return level[x][y] == MyConstants.FLOOR;
-  }
-
-  public void handlePlayer(int playerMX, int playerMY)
-  {
-
-    playerMX += player.getPositionX();
-    playerMY += player.getPositionY();
-    try
-    {
-      if (isValidPosition(playerMX, playerMY))
-      {
-        Monster monsterAtPlace = getMonster(playerMX, playerMY);
-        if (monsterAtPlace != null)
-        {
-          monsterAtPlace.interact(player);
-          if (monsterAtPlace.shouldRemove())
-          {
-            monsterList.remove(monsterAtPlace);
-          }
-        }
-        else
-        {
-          player.move(playerMX - player.getPositionX(), playerMY - player.getPositionY());
-        }
-      }
-    }
-    catch (Exception e)
-    {
-      System.out.println(e.getMessage() + " out of bounds");
-    }
-    repaint();
   }
 
   private Monster getMonster(int x, int y)
   {
     for (Monster monster : monsterList)
     {
-      if (monster.getPositionX() == x && monster.getPositionY() == y)
+      if (monster.getPosX() == x && monster.getPosY() == y)
       {
         return monster;
       }
@@ -186,21 +263,21 @@ public class MapPanel extends JPanel
   // TODO: Refactoring
   private void handleMonsters(Monster monster, int monsterMX, int monsterMY)
   {
-    monsterMX += monster.getPositionX();
-    monsterMY += monster.getPositionY();
+    monsterMX += monster.getPosX();
+    monsterMY += monster.getPosY();
     try
     {
-      if (isValidPosition(monsterMX, monsterMY))
+      if (isFloor(monsterMX, monsterMY))
       {
         if (getMonster(monsterMX, monsterMY) == null)
         {
-          if (player.getPositionX() == monsterMX && player.getPositionY() == monsterMY)
+          if (player.getPosX() == monsterMX && player.getPosY() == monsterMY)
           {
             monster.attack(player);
           }
           else
           {
-            monster.move(monsterMX - monster.getPositionX(), monsterMY - monster.getPositionY());
+            monster.move(monsterMX - monster.getPosX(), monsterMY - monster.getPosY());
           }
         }
       }
@@ -218,15 +295,14 @@ public class MapPanel extends JPanel
     for (Monster monster : monsterList)
     {
 
-      int monsterX = monster.getPositionX();
-      int monsterY = monster.getPositionY();
-      int playerX = player.getPositionX();
-      int playerY = player.getPositionY();
+      int monsterX = monster.getPosX();
+      int monsterY = monster.getPosY();
+      int playerX = player.getPosX();
+      int playerY = player.getPosY();
 
       if (Math.abs(playerX - monsterX) < MyConstants.TRIGGER_DIST &&
               Math.abs(playerY - monsterY) < MyConstants.TRIGGER_DIST)
       {
-
         AStar as = new AStar(level, monsterX, monsterY, false);
         List<AStar.Node> path = as.findPathTo(playerX, playerY);
         int movementX = path.get(1).x - monsterX;

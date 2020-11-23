@@ -5,29 +5,29 @@ public abstract class Entity
   protected int posX;
   protected int posY;
 
-  public Entity(int positionX, int positionY)
+  public Entity(int posX, int posY)
   {
-    this.posX = positionX;
-    this.posY = positionY;
+    this.posX = posX;
+    this.posY = posY;
   }
 
-  public int getPositionX()
+  public int getPosX()
   {
     return posX;
   }
 
-  public int getPositionY()
+  public int getPosY()
   {
     return posY;
   }
 
-  public void setPositionX(int positionX)
+  public void setPosX(int posX)
   {
-    this.posX = positionX;
+    this.posX = posX;
   }
 
-  public void setPositionY(int positionY)
+  public void setPosY(int posY)
   {
-    this.posY = positionY;
+    this.posY = posY;
   }
 }

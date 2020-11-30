@@ -8,8 +8,8 @@ public class MainWindow extends JFrame
 {
   private static final long serialVersionUID = 1L; // remove warning
 
-  private int mapPanelWidth = 40; // set default size for mapPanel
-  private int mapPanelHeight = 40; // set default size for mapPanel
+  private int mapPanelWidth = 30; // set default size for mapPanel
+  private int mapPanelHeight = 30; // set default size for mapPanel
 
   private MapPanel mapPanel;
 

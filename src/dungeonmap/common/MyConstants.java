@@ -8,6 +8,6 @@ public class MyConstants
   public static final int TRIGGER_DIST = 6; // monster trigger distance
   public static final Double MONSTER_SPAWN_CHANCE = 0.02; // chance for monster to spawn
 
-  public static final int HEAL = 5;// potion heal amount
+  public static final int HEAL = 8;// potion heal amount
 
 }

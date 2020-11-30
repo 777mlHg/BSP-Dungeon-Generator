@@ -198,7 +198,7 @@ public class MapPanel extends JPanel
     }
     else // if dead
     {
-      JOptionPane.showMessageDialog(this, "You Died!");
+      JOptionPane.showMessageDialog(this, "You Died! Press Generate to Restart.");
     }
     repaint();
   }

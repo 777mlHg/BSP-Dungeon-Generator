@@ -2,7 +2,7 @@
   "files.exclude": {
     "**/*.class": true
   },
-  "java.format.settings.url": "https://raw.githubusercontent.com/777mlHg/java_setting_profile/master/setting_profile.xml",
+  "java.format.settings.url": "https://gist.githubusercontent.com/joowy/3df3d0732e09cc20f7d6a9561edf5bb6/raw/13b2988fa7bc2221db8ac9e378ca1ecac9396c38/java-formatter",
   "editor.detectIndentation": false,
   "editor.tabSize": 2
 }

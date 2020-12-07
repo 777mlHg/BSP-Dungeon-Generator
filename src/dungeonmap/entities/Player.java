@@ -5,6 +5,9 @@ import src.dungeonmap.common.ImageLoader;
 
 /**
  * Represents the player.
+ * 
+ * @author adapted from
+ *         http://trystans.blogspot.com/2011/08/roguelike-tutorial-04-player.html
  */
 
 public class Player extends Character
@@ -15,7 +18,7 @@ public class Player extends Character
   public Player(String name, int maxHealth, int attackDamage)
   {
     super(name, maxHealth, attackDamage, 0, 0);
-    this.playerImage = ImageLoader.getImage("./images/player.png");
+    this.playerImage = ImageLoader.getImage("./src/images/player.png");
   }
 
   public BufferedImage getPlayerImage()
@@ -26,8 +29,8 @@ public class Player extends Character
   @Override
   public void attack(Character other)
   {
-    int damageWithAdditional = attackDamage;
-    other.takeDamage(damageWithAdditional);
+    int damage = attackDamage;
+    other.takeDamage(damage);
   }
 
 }

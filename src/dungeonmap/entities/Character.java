@@ -1,5 +1,9 @@
 package src.dungeonmap.entities;
 
+/**
+ * @author adapted from
+ *         http://trystans.blogspot.com/2011/09/roguelike-tutorial-05-stationary.html
+ */
 public abstract class Character extends Entity
 {
   protected String name;

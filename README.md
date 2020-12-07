@@ -13,14 +13,26 @@ https://en.wikipedia.org/wiki/Binary_space_partitioning
 ## Usage
 
 - Open terminal in directory of Main.java
-- compile and run
-
-<!-- ![Alt Text](https://raw.githubusercontent.com/777mlHg/BSP-Dungeon-Generator/master/images/readme/complie_run.gif) -->
+- Compile and run
 
 - Click generate to generate a map
 - Change width, height, wall and floor color to modify map.
-<!-- ![Alt Text](https://raw.githubusercontent.com/777mlHg/BSP-Dungeon-Generator/master/images/readme/change_hw_color.gif) -->
+
 - Use WASD keys to move character
+
+## Works Cited
+
+Map Generation
+
+- [Timothy Hely](https://gamedevelopment.tutsplus.com/tutorials/how-to-use-bsp-trees-to-generate-game-maps--gamedev-12268)
+
+Path finding
+
+- [rosettacodeorg](https://rosettacode.org/wiki/A*_search_algorithm#Java)
+
+Player, Monster and Items
+
+- [Trystan](http://trystans.blogspot.com/2016/01/roguelike-tutorial-00-table-of-contents.html)
 
 ## License
 

@@ -15,7 +15,7 @@ public class Potion extends Entity
   public Potion(int posX, int posY)
   {
     super(posX, posY);
-    this.potionImage = ImageLoader.getImage("./images/potion.png");
+    this.potionImage = ImageLoader.getImage("./src/images/potion.png");
 
   }
 

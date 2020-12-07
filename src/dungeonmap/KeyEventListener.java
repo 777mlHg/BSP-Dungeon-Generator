@@ -9,7 +9,7 @@ import java.awt.event.KeyListener;
  */
 public class KeyEventListener implements KeyListener
 {
-  private MapPanel map;
+  private gamePanel map;
 
   public KeyEventListener(MainWindow runner)
   {
@@ -38,7 +38,7 @@ public class KeyEventListener implements KeyListener
   }
 
   // update the map when a movement key is pressed
-  private void updateMap(MapPanel map, int mX, int mY)
+  private void updateMap(gamePanel map, int mX, int mY)
   {
     map.handlePlayer(mX, mY);
     map.moveMonsters();

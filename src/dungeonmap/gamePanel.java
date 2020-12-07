@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MapPanel extends JPanel
+public class gamePanel extends JPanel
 {
   private static final long serialVersionUID = 1841571143992758514L;
 
@@ -27,7 +27,7 @@ public class MapPanel extends JPanel
   private Color floorColor;
 
   private BSPTree mapBSP; // initialize the map
-  private int[][] level; // map in array representation
+  private int[][] tiles; // map in array representation
 
   int[][] listOfCenters;
   private ArrayList<Monster> monsterList;
@@ -39,7 +39,7 @@ public class MapPanel extends JPanel
    * @param fColor
    * @param wColor
    */
-  public MapPanel(int mapWidth, int mapHeight, Color fColor, Color wColor)
+  public gamePanel(int mapWidth, int mapHeight, Color fColor, Color wColor)
   {
     this.wallColor = wColor;
     this.floorColor = fColor;
@@ -47,14 +47,13 @@ public class MapPanel extends JPanel
     this.mapHeight = mapHeight;
 
     this.mapBSP = new BSPTree(mapWidth, mapHeight); // create a new map
-    this.level = mapBSP.generateLeafs(); // create new level
+    this.tiles = mapBSP.generateLeafs(); // create new level
 
     // generate the centers of all the room
-    // TODO: items in the center of the room
     this.listOfCenters = CenterPoints();
 
     // initialize player and initial location
-    this.player = new Player("Player", 10, 5);
+    this.player = new Player("Player", 15, 5);
     this.player.setPosX(listOfCenters[0][0]);
     this.player.setPosY(listOfCenters[0][1]);
 
@@ -93,7 +92,7 @@ public class MapPanel extends JPanel
 
   public boolean isFloor(int x, int y)
   {
-    return level[x][y] == MyConstants.FLOOR;
+    return tiles[x][y] == MyConstants.FLOOR;
   }
 
   /**
@@ -135,7 +134,7 @@ public class MapPanel extends JPanel
     {
       for (j = 0; j < mapHeight; j++)
       {
-        tileRepresentation = level[i][j];
+        tileRepresentation = tiles[i][j];
 
         if (tileRepresentation == MyConstants.FLOOR)
         {
@@ -223,6 +222,9 @@ public class MapPanel extends JPanel
     return null;
   }
 
+  /**
+   * each tile have a chance for monster to spawn
+   */
   private void generateMonster()
   {
     int tileRepresentation;
@@ -231,7 +233,7 @@ public class MapPanel extends JPanel
     {
       for (int j = 0; j < mapHeight; j++)
       {
-        tileRepresentation = level[i][j];
+        tileRepresentation = tiles[i][j];
         randomNum = Math.random();
         if (tileRepresentation == MyConstants.FLOOR)
         {
@@ -260,18 +262,17 @@ public class MapPanel extends JPanel
     return null;
   }
 
-  // TODO: Refactoring
   private void handleMonsters(Monster monster, int monsterMX, int monsterMY)
   {
     monsterMX += monster.getPosX();
     monsterMY += monster.getPosY();
     try
     {
-      if (isFloor(monsterMX, monsterMY))
+      if (isFloor(monsterMX, monsterMY)) // check check location is a floor tile
       {
         if (getMonster(monsterMX, monsterMY) == null)
         {
-          if (player.getPosX() == monsterMX && player.getPosY() == monsterMY)
+          if (player.getPosX() == monsterMX && player.getPosY() == monsterMY) // if monster move on to player location attack the player
           {
             monster.attack(player);
           }
@@ -303,7 +304,7 @@ public class MapPanel extends JPanel
       if (Math.abs(playerX - monsterX) < MyConstants.TRIGGER_DIST &&
               Math.abs(playerY - monsterY) < MyConstants.TRIGGER_DIST)
       {
-        AStar as = new AStar(level, monsterX, monsterY, false);
+        AStar as = new AStar(tiles, monsterX, monsterY, false);
         List<AStar.Node> path = as.findPathTo(playerX, playerY);
         int movementX = path.get(1).x - monsterX;
         int movementY = path.get(1).y - monsterY;

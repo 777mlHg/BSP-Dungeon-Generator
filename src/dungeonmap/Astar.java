@@ -28,11 +28,11 @@ class AStar
     public double g;
     public double h;
 
-    Node(Node parent, int xpos, int ypos, double g, double h)
+    Node(Node parent, int xPos, int yPos, double g, double h)
     {
       this.parent = parent;
-      this.x = xpos;
-      this.y = ypos;
+      this.x = xPos;
+      this.y = yPos;
       this.g = g;
       this.h = h;
     }
@@ -46,15 +46,15 @@ class AStar
     }
   }
 
-  AStar(int[][] maze, int xstart, int ystart, boolean diag)
+  AStar(int[][] maze, int xStart, int yStart, boolean diag)
   {
     this.open = new ArrayList<>();
     this.closed = new ArrayList<>();
     this.path = new ArrayList<>();
     this.maze = maze;
-    this.now = new Node(null, xstart, ystart, 0, 0);
-    this.xstart = xstart;
-    this.ystart = ystart;
+    this.now = new Node(null, xStart, yStart, 0, 0);
+    this.xstart = xStart;
+    this.ystart = yStart;
     this.diag = diag;
   }
 

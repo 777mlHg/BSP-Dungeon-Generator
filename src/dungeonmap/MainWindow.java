@@ -11,7 +11,7 @@ public class MainWindow extends JFrame
   private int mapPanelWidth = 30; // set default size for mapPanel
   private int mapPanelHeight = 30; // set default size for mapPanel
 
-  private MapPanel mapPanel;
+  private gamePanel gamePanel;
 
   private static JFrame app = new JFrame("Dungeon Map Generator GUI"); // Main window
   private static JPanel inputsContainerPanel = new JPanel();
@@ -115,7 +115,7 @@ public class MainWindow extends JFrame
   {
     try
     {
-      this.mapPanel = new MapPanel(mapPanelWidth, mapPanelHeight, floorColor, wallColor);
+      this.gamePanel = new gamePanel(mapPanelWidth, mapPanelHeight, floorColor, wallColor);
       // set app size to conform to the map panel size
       app.setSize(new Dimension(((mapPanelWidth < 15 ? 20 : mapPanelWidth) + 7) * 20, (mapPanelHeight + 7) * 20));
     }
@@ -132,16 +132,15 @@ public class MainWindow extends JFrame
 
     app.removeKeyListener(keyEventListener);
     // add key listener to the app J frame
-    // TODO: add key listener to map panel
     keyEventListener = new KeyEventListener(this);
     app.addKeyListener(keyEventListener);
 
-    app.add(mapPanel);
+    app.add(gamePanel);
     app.revalidate();
   }
 
-  public MapPanel getMapPanel()
+  public gamePanel getMapPanel()
   {
-    return mapPanel;
+    return gamePanel;
   }
 }

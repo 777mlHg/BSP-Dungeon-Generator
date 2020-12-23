@@ -12,30 +12,33 @@ https://en.wikipedia.org/wiki/Binary_space_partitioning
 
 ## File Structure
 
-📦src
-┣ 📂dungeonmap
-┃ ┣ 📂common
-┃ ┃ ┣ 📜ImageLoader.java
-┃ ┃ ┣ 📜MyConstants.java
-┃ ┃ ┣ 📜MyPoint.java
-┃ ┃ ┣ 📜Randomizer.java
-┃ ┃ ┗ 📜Rectangle.java
-┃ ┣ 📂entities
-┃ ┃ ┣ 📜Character.java
-┃ ┃ ┣ 📜Entity.java
-┃ ┃ ┣ 📜Monster.java
-┃ ┃ ┣ 📜Player.java
-┃ ┃ ┗ 📜Potion.java
-┃ ┣ 📜Astar.java
-┃ ┣ 📜BSPTree.java
-┃ ┣ 📜gamePanel.java
-┃ ┣ 📜KeyEventListener.java
-┃ ┣ 📜Main.java
-┃ ┗ 📜MainWindow.java
-┗ 📂images
-┃ ┣ 📜monster.png
-┃ ┣ 📜player.png
-┃ ┗ 📜potion.png
+📦src  
+┣ 📂dungeonmap  
+┃ ┣ 📂common  
+┃ ┃ ┣ 📜ImageLoader.java  
+┃ ┃ ┣ 📜MyConstants.java  
+┃ ┃ ┣ 📜MyPoint.java  
+┃ ┃ ┣ 📜Randomizer.java  
+┃ ┃ ┗ 📜Rectangle.java  
+┃ ┣ 📂entities  
+┃ ┃ ┣ 📜Character.java  
+┃ ┃ ┣ 📜Entity.java  
+┃ ┃ ┣ 📜Monster.java  
+┃ ┃ ┣ 📜Player.java  
+┃ ┃ ┗ 📜Potion.java  
+┃ ┣ 📜Astar.java  
+┃ ┣ 📜BSPTree.java  
+┃ ┣ 📜gamePanel.java  
+┃ ┣ 📜KeyEventListener.java  
+┃ ┣ 📜Main.java  
+┃ ┗ 📜MainWindow.java  
+┗ 📂images  
+┃ ┣ 📜cat.png  
+┃ ┣ 📜monster.png  
+┃ ┣ 📜ooze.png  
+┃ ┣ 📜player.png  
+┃ ┣ 📜potion.png  
+┃ ┗ 📜snake.png
 
 ## Usage
 

@@ -287,8 +287,8 @@ public class BSPTree
     for (int i = Math.min(x1, x2); i < Math.max(x1, x2) + 1; i++)
     {
       tiles[i][y] = 0;
-      tiles[i][y + 1] = 0;
-      tiles[i][y - 1] = 0;
+      // tiles[i][y + 1] = 0;
+      // tiles[i][y - 1] = 0;
     }
   }
 
@@ -297,8 +297,8 @@ public class BSPTree
     for (int i = Math.min(y1, y2); i < Math.max(y1, y2) + 1; i++)
     {
       tiles[x][i] = 0;
-      tiles[x + 1][i] = 0;
-      tiles[x - 1][i] = 0;
+      // tiles[x + 1][i] = 0;
+      // tiles[x - 1][i] = 0;
 
     }
   }

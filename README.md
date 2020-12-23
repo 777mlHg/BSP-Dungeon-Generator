@@ -10,6 +10,33 @@ https://en.wikipedia.org/wiki/Binary_space_partitioning
 - `javac Main.java` in the directory of Main.java to compile
 - `java Main` to execute the program
 
+## File Structure
+
+📦src
+┣ 📂dungeonmap
+┃ ┣ 📂common
+┃ ┃ ┣ 📜ImageLoader.java
+┃ ┃ ┣ 📜MyConstants.java
+┃ ┃ ┣ 📜MyPoint.java
+┃ ┃ ┣ 📜Randomizer.java
+┃ ┃ ┗ 📜Rectangle.java
+┃ ┣ 📂entities
+┃ ┃ ┣ 📜Character.java
+┃ ┃ ┣ 📜Entity.java
+┃ ┃ ┣ 📜Monster.java
+┃ ┃ ┣ 📜Player.java
+┃ ┃ ┗ 📜Potion.java
+┃ ┣ 📜Astar.java
+┃ ┣ 📜BSPTree.java
+┃ ┣ 📜gamePanel.java
+┃ ┣ 📜KeyEventListener.java
+┃ ┣ 📜Main.java
+┃ ┗ 📜MainWindow.java
+┗ 📂images
+┃ ┣ 📜monster.png
+┃ ┣ 📜player.png
+┃ ┗ 📜potion.png
+
 ## Usage
 
 - Open terminal in directory of Main.java
